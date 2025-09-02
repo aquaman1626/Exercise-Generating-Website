@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitGenie - Personalized Workout Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-900 font-sans">
+    <!-- Homepage Section -->
+    <section id="home" class="min-h-screen flex flex-col justify-center items-center text-center p-4">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-5xl md:text-6xl font-bold text-blue-600 mb-4">Welcome to FitGenie</h1>
+            <p class="text-lg md:text-xl mb-6 text-gray-700">Your personalized exercise routine generator. Fill in your details to create a tailored workout plan that fits your goals, fitness level, and lifestyle.</p>
+            <div class="mb-8">
+                <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/64430767-c2d8-47c9-94c5-6c1fa1f021ef.png" alt="A diverse group of individuals of various ages and fitness levels engaged in different exercises like weightlifting, yoga, running, and cycling in a bright, modern gym with natural light and motivational posters on the walls, conveying energy and determination" class="w-full h-96 md:h-auto object-cover rounded-lg shadow-lg mx-auto max-w-4xl onerror="this.style.display='none';" />
+            </div>
+            <button onclick="showGenerator()" class="bg-blue-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition duration-300 shadow-md">Get Started</button>
+        </div>
+    </section>
+
+    <!-- Workout Generator Section -->
+    <section id="generator" class="min-h-screen flex flex-col justify-center items-center p-4 hidden">
+        <div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg">
+            <h2 class="text-3xl font-bold text-blue-600 mb-6 text-center">Build Your Routine</h2>
+            <form id="workoutForm" class="space-y-4">
+                <div>
+                    <label for="age" class="block text-sm font-medium text-gray-700">Age:</label>
+                    <input type="number" id="age" class="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" required>
+                </div>
+                <div>
+                    <label for="gender" class="block text-sm font-medium text-gray-700">Gender:</label>
+                    <select id="gender" class="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" required>
+                        <option value="">Select</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="level" class="block text-sm font-medium text-gray-700">Fitness Level:</label>
+                    <select id="level" class="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" required>
+                        <option value="">Select</option>
+                        <option value="beginner">Beginner</option>
+                        <option value="intermediate">Intermediate</option>
+                        <option value="advanced">Advanced</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="goal" class="block text-sm font-medium text-gray-700">Goal:</label>
+                    <select id="goal" class="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" required>
+                        <option value="">Select</option>
+                        <option value="weight_loss">Weight Loss</option>
+                        <option value="muscle_gain">Muscle Gain</option>
+                        <option value="endurance">Endurance</option>
+                        <option value="general">General Fitness</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="equipment" class="block text-sm font-medium text-gray-700">Available Equipment:</label>
+                    <select id="equipment" class="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" required>
+                        <option value="">Select</option>
+                        <option value="none">None</option>
+                        <option value="basic">Basic (Dumbbells, Resistance Bands)</option>
+                        <option value="full">Full Gym Access</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="duration" class="block text-sm font-medium text-gray-700">Session Duration (minutes):</label>
+                    <input type="number" id="duration" class="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" required min="10" max="120">
+                </div>
+                <button type="submit" class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg text-lg font-semibold hover:bg-blue-700 transition duration-300">Generate Routine</button>
+            </form>
+            <div class="mt-8">
+                <button onclick="showHome()" class="text-blue-600 underline hover:text-blue-800">Back to Home</button>
+            </div>
+            <div id="routineOutput" class="mt-8 hidden">
+                <h3 class="text-xl font-semibold mb-4">Your Personalized Workout Routine:</h3>
+                <div id="routineDetails" class="space-y-2"></div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function showGenerator() {
+            document.getElementById('home').classList.add('hidden');
+            document.getElementById('generator').classList.remove('hidden');
+        }
+
+        function showHome() {
+            document.getElementById('generator').classList.add('hidden');
+            document.getElementById('home').classList.remove('hidden');
+        }
+
+        document.getElementById('workoutForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const age = parseInt(document.getElementById('age').value);
+            const gender = document.getElementById('gender').value;
+            const level = document.getElementById('level').value;
+            const goal = document.getElementById('goal').value;
+            const equipment = document.getElementById('equipment').value;
+            const duration = parseInt(document.getElementById('duration').value);
+            
+            // Simple logic to generate routine based on inputs
+            let exercises = [];
+            let setsReps = '';
+            
+            if (level === 'beginner') setsReps = '3 sets of 10-12 reps';
+            else if (level === 'intermediate') setsReps = '4 sets of 8-10 reps';
+            else setsReps = '5 sets of 6-8 reps';
+            
+            if (goal === 'weight_loss') {
+                if (equipment === 'none') exercises = ['Push-ups', 'Squats', 'Plank', 'Burpees'];
+                else if (equipment === 'basic') exercises = ['Dumbbell Squats', 'Resistance Band Pulls', 'Bench Press (if band)', 'Mountain Climbers'];
+                else exercises = ['Treadmill Running', 'Elliptical', 'Cable Row', 'Leg Press'];
+            } else if (goal === 'muscle_gain') {
+                if (equipment === 'none') exercises = ['Push-ups', 'Bodyweight Squats', 'Lunges', 'Dips'];
+                else if (equipment === 'basic') exercises = ['Dumbbell Chest Press', 'Dumbbell Rows', 'Shoulder Raises', 'Calf Raises'];
+                else exercises = ['Barbell Bench Press', 'Deadlifts', 'Overhead Press', 'Pull-ups'];
+            } else if (goal === 'endurance') {
+                exercises = ['Jumping Jacks', 'High Knees', 'Burpees', 'Plank Holds', 'Mountain Climbers'];
+                setsReps = 'Circuit: 30-60 seconds each, repeat 3-5 times';
+            } else { // general
+                exercises = ['Push-ups', 'Squats', 'Sit-ups', 'Jumping Jacks'];
+            }
+            
+            // Generate output
+            const output = document.getElementById('routineOutput');
+            const details = document.getElementById('routineDetails');
+            details.innerHTML = '';
+            exercises.forEach(ex => {
+                const p = document.createElement('p');
+                p.textContent = `${ex}: ${setsReps}`;
+                details.appendChild(p);
+            });
+            output.classList.remove('hidden');
+            
+            // Approximate time check (simple)
+            const totalExercises = exercises.length;
+            const suggestedTime = totalExercises * 5; // rough estimate per exercise with rests
+            if (suggestedTime > duration) {
+                const note = document.createElement('p');
+                note.textContent = `Note: This routine may exceed your desired duration. Adjust as needed for a ${duration}-minute session.`;
+                note.classList.add('text-red-600', 'mt-4');
+                details.appendChild(note);
+            }
+        });
+    </script>
+</body>
+</html>
+</content>
+</create_file>
+  
